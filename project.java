@@ -1,6 +1,5 @@
 import java.io.*;
 import java.nio.charset.Charset;
-import java.util.*;
 
 import opennlp.tools.postag.*;
 import opennlp.tools.sentdetect.*;
@@ -22,6 +21,7 @@ public class project {
 	 * train() will not actually be used in this code.
 	 * It is more for reference to understand our code.
 	 */
+  /*
 	private static void train ()
 	{
 
@@ -76,13 +76,43 @@ public class project {
 		}
 
 	} // end train...
+	*/
 
+	private static void POSTag (){
+		InputStream modelIn = null;
+
+		try {
+		  modelIn = new FileInputStream("en-pos-maxent.bin");
+		  POSModel model = new POSModel(modelIn);
+			
+			POSTaggerME tagger = new POSTaggerME(model);
+			String sent[] = new String[]{"Most", "large", "cities", "in", "the", "US", "had",
+	                "morning", "and", "afternoon", "newspapers", "."};		  
+			String tags[] = tagger.tag(sent);
+			
+			for(int i=0; i<tags.length; i++)
+				System.out.print(tags[i] + '\n');
+		}
+		catch (IOException e) {
+		  // Model loading failed, handle the error
+		  e.printStackTrace();
+		}
+		finally {
+		  if (modelIn != null) {
+		    try {
+		      modelIn.close();
+		    }
+		    catch (IOException e) {
+		    }
+		  }
+		}			
+	}
 
 
 
 	public static void main (String args[])
 	{
-
+		POSTag();
 	} // end main...
 
 }
