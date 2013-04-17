@@ -1,19 +1,23 @@
 import java.io.*;
+import java.util.Scanner;
 
 import opennlp.tools.postag.*;
 
 public class project {
 
-  private static void getFile(File folder, File output)
+  private static void getFile(File folder, File output) throws FileNotFoundException
 	{
 		for (final File fileEntry : folder.listFiles()) {
-		    if (fileEntry.isDirectory()) {
+		    if (fileEntry.isDirectory()) {	//If the given input is a folder, search through the folder
 		        getFile(fileEntry, output);
-		    } else {
+		    } else { //If the given input is a file, read through the file and POS tag it
+		    	//Reads from the file and splits it by line
 		        System.out.println(fileEntry.getName());
-		  	  
-				String temp = "Test one tests test two.";
-				String array[] = temp.split(" ");
+		    	@SuppressWarnings("resource")
+				String content = new Scanner(new File(fileEntry.getAbsolutePath())).useDelimiter("\\Z").next();
+		    	System.out.println(content);
+		        //Splits the scanned file into individual words
+				String array[] = content.split(" ");
 				POSTag(array, output);
 		    }
 		}
@@ -26,16 +30,15 @@ public class project {
 		InputStream modelIn = null;
 
 		try {
-		  modelIn = new FileInputStream("en-pos-maxent.bin");
-		  POSModel model = new POSModel(modelIn);
+			modelIn = new FileInputStream("en-pos-maxent.bin");
+			POSModel model = new POSModel(modelIn);
 			
 			POSTaggerME tagger = new POSTaggerME(model);
-			//String sent[] = new String[]{"Most", "large", "cities", "in", "the", "US", "had",
-	                //"morning", "and", "afternoon", "newspapers", "."};
 			String tags[] = tagger.tag(sent);
 			
 			for(int i=0; i<tags.length; i++)
-				System.out.print(tags[i] + '\n');
+				System.out.print(tags[i] + ' ');
+			System.out.println('\n');
 		}
 		catch (IOException e) {
 		  // Model loading failed, handle the error
@@ -114,10 +117,10 @@ public class project {
 	} // end train...
 	*/
 
-	public static void main (String args[])
+	public static void main (String args[]) throws FileNotFoundException
 	{
-		File folder = new File(args[0]);
-		File output = new File(args[1]);
+		File folder = new File(args[0]);	//The given path of the folder of files
+		File output = new File(args[1]);	//The output file to print the scores
 		getFile(folder, output);
 	} // end main...
 
