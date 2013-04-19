@@ -24,10 +24,11 @@ A: This project was created using Eclipse on Ubuntu
 		to "Build Path" and click on "Add to Build Path".
 	4) Before running the program, edit the run configuration (run->run 
 		configurations). Click on the "Arguments" tab.
-		Add under program arguments the full path of the src folder
-			and also the src/essay-corpus folder.
-			eg /home/<user name>/workspace/<project name>/src/essay-corpus
-			and /home/<user name>/workspace/<project name>/src/output.txt
+		Add under program arguments the full path of output file in 
+			the src folder and also the src/essay-corpus folder.
+			/home/<user name>/workspace/<project name>/src/essay-corpus
+			<space>
+			/home/<user name>/workspace/<project name>/src/output.txt
 	5) Run the program.
 
 	Note) To grade new text files, add them to the essay-corpus folder
@@ -64,7 +65,13 @@ is formatted, and what its purpose is. Do not describe the files already
 provided to you, such as the essays. Just describe the files you create,
 if any.
 
-A: 
+A: Our program uses two files. The first file which may also be a folder,
+contains the text to be tagged or the files that will be tagged.
+The second file outputs the grades our program calculates and also the
+tags of each of the words in a specific file. It is called "output.txt"
+and is a simple text file containing letters and numbers.
+Both of these files are located within the project directory under the
+subfolder "src".
 	
 
 -------------------------------------------------------------------------
@@ -73,7 +80,12 @@ A:
 Q: A brief explanation of how you exploited POS tagging to evaluate the essays.
 Also state some patterns of errors in terms of POS tags that you found.
 
-A: 
+A: In order to grade the first part of the project (1a, 1b, and 1c) we used
+the fact that the words are tagged in a certain tense and possessive tense.
+Such as 3rd person past, and 1st person present. By using these types of tags
+we are able to tell of two words that are part of the same sentence match
+according to tense and possession. If they do not match then it is an error
+on the writers side so they get marked off for that.
 
 
 -------------------------------------------------------------------------
@@ -82,4 +94,5 @@ A:
 Q: Write here a short list of what you plan to do/fix for the second part of
 the project.
 
-A: 
+A: Use the parser to check on the syntax of a setting.
+Make sure that a sentence is composed of an NP and VP.
