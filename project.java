@@ -23,6 +23,7 @@ import opennlp.tools.util.model.ModelType;
 
 public class project {
 
+	//Grades the file by going through each sentence and comparing tags
 	private static void grader(File output) throws FileNotFoundException
 	{
 		Scanner scanner = new Scanner(output);
@@ -42,6 +43,7 @@ public class project {
 		}
 	}
 	
+	//Grades the functions based on tense and possession
 	private static void grading(String x)
 	{
 		
@@ -124,6 +126,7 @@ public class project {
 		
 	}
 	
+	//Function to read a file, or read through a folder and tag each of the files
 	private static void getFile(File folder, FileWriter output) throws FileNotFoundException
 	{
 		for (final File fileEntry : folder.listFiles()) {
@@ -140,6 +143,7 @@ public class project {
 				for(int i=0; i<array.length; i++){
 					System.out.println(array[i]);
 				}
+				//Calls the following functions to tag and grade the current file
 				POSTag(array, output);
 				countSentences(array, output);
 		    }
@@ -154,10 +158,12 @@ public class project {
 		InputStream modelIn = null;
 
 		try {
+			//File required to use the tagger
 			modelIn = new FileInputStream("en-pos-maxent.bin");
 			POSModel model = new POSModel(modelIn);
 
 			POSTaggerME tagger = new POSTaggerME(model);
+			//Tag the current file
 			String tags[] = tagger.tag(sent);
 
 			for(int i=0; i<tags.length; i++)
@@ -182,13 +188,32 @@ public class project {
   	//Count the number of sentences in the given file
   	private static void countSentences(String sent[], FileWriter output) throws IOException{
 		int sentences = 0;
+		float score = 0;
 		for(int i=0; i<sent.length; i++){
 			String temp[] = sent[i].split("[ \n]");
-			if(temp.length > 1)
+			if(temp.length > 1)	//If the sentence length is more than one word it may be a proper sentence
 				sentences++;
-			output.write(sentences + '\n');
+		}
+		score = (float)sentences / 6;
+		//Calculate the scores of each of the files rounded down to the nearest half
+		if(score > 1){
+			score = 5;
+			int s = (int) score;
+			output.write(s + "\n");
+		}else{
+			score = score * 5;
+			if((score - Math.floor(score)) > 0.5){
+				score = (float) (Math.floor(score) + 0.5);
+				int s = (int) score;
+				output.write(s + ".5\n");
+			}else{
+				score = (float) (Math.floor(score));
+				int s = (int) score;
+				output.write(s + "\n");
+			}
 		}
 		System.out.println(sentences);
+		System.out.println(score);
   	}//End countSentences
 
 	public static void main (String args[]) throws IOException
