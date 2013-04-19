@@ -177,6 +177,18 @@ public class project {
 			}
 		}			
 	} // end POSTag...
+  
+  	//Count the number of sentences in the given file
+  	private static void countSentences(String sent[], FileWriter output) throws IOException{
+		int sentences = 0;
+		for(int i=0; i<sent.length; i++){
+			String temp[] = sent[i].split("[ \n]");
+			if(temp.length > 1)
+				sentences++;
+			output.write(sentences + '\n');
+		}
+		System.out.println(sentences);
+  	}//End countSentences
 
 	public static void main (String args[]) throws IOException
 	{
