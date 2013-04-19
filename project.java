@@ -202,8 +202,14 @@ public class project {
 			output.write(s + "\n");
 		}else{
 			score = score * 5;
-			if((score - Math.floor(score)) > 0.5){
-				score = (float) (Math.floor(score) + 0.5);
+			double comp = score - Math.floor(score);
+			if(comp >= 0.75){
+				score = (float) (Math.floor(score) + 1.0);
+				int s = (int) score;
+				if(score > 5) score = 5;
+				output.write(s + "\n");
+			}else if(comp >= 0.25){
+				score = (float) (Math.floor(score) + 1.0);
 				int s = (int) score;
 				output.write(s + ".5\n");
 			}else{
