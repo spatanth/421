@@ -45,7 +45,7 @@ public class project {
 	private static void grading(String x)
 	{
 		
-		switch () {
+		switch (x) {
 		case "CC": // Coordinating conjunction
 			break;
 		case "CD": // Cardinal number
