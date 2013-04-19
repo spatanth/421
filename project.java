@@ -141,6 +141,7 @@ public class project {
 					System.out.println(array[i]);
 				}
 				POSTag(array, output);
+				countSentences(array, output);
 		    }
 		}
 		
