@@ -53,7 +53,8 @@ Q: In this section you must specify what your program writes in the
 standard or file output.
 
 A: Our output will be the grade that we have given the file. It will include
-all of the information asked for by the individual parts of grading.
+all of the information asked for by the individual parts of grading. This
+will also be outputted into the standard output within the console.
 	
 
 -------------------------------------------------------------------------
