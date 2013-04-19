@@ -5,7 +5,7 @@ import opennlp.tools.postag.*;
 
 public class project {
 
-  private static void getFile(File folder, File output) throws FileNotFoundException
+  private static void getFile(File folder, FileWriter output) throws FileNotFoundException
 	{
 		for (final File fileEntry : folder.listFiles()) {
 		    if (fileEntry.isDirectory()) {	//If the given input is a folder, search through the folder
@@ -15,9 +15,12 @@ public class project {
 		        System.out.println(fileEntry.getName());
 		    	@SuppressWarnings("resource")
 				String content = new Scanner(new File(fileEntry.getAbsolutePath())).useDelimiter("\\Z").next();
-		    	System.out.println(content);
+		    	System.out.println(content + '\n');
 		        //Splits the scanned file into individual words
-				String array[] = content.split(" ");
+				String array[] = content.split("[.\n\r\n]");
+				for(int i=0; i<array.length; i++){
+					System.out.println(array[i]);
+				}
 				POSTag(array, output);
 		    }
 		}
@@ -26,7 +29,7 @@ public class project {
   	/*
   	 * Parse a sentence array and show the tags to each word
   	 */
-	private static void POSTag(String sent[], File output){
+	private static void POSTag(String sent[], FileWriter output){
 		InputStream modelIn = null;
 
 		try {
@@ -34,11 +37,17 @@ public class project {
 			POSModel model = new POSModel(modelIn);
 			
 			POSTaggerME tagger = new POSTaggerME(model);
-			String tags[] = tagger.tag(sent);
-			
-			for(int i=0; i<tags.length; i++)
-				System.out.print(tags[i] + ' ');
-			System.out.println('\n');
+			for(int j=0; j<sent.length; j++){
+				String temp[] = sent[j].split("[ \n]");
+				String tags[] = tagger.tag(temp);
+				
+				for(int i=0; i<tags.length; i++){
+					output.write(tags[i] + ' ');
+					System.out.print(tags[i] + ' ');
+				}
+				output.write('\n');
+				System.out.println('\n');
+			}
 		}
 		catch (IOException e) {
 		  // Model loading failed, handle the error
@@ -117,11 +126,12 @@ public class project {
 	} // end train...
 	*/
 
-	public static void main (String args[]) throws FileNotFoundException
+	public static void main (String args[]) throws IOException
 	{
 		File folder = new File(args[0]);	//The given path of the folder of files
-		File output = new File(args[1]);	//The output file to print the scores
+		FileWriter output = new FileWriter(args[1]);	//The output file to print the tags
 		getFile(folder, output);
+		output.close();
 	} // end main...
 
 }
