@@ -63,6 +63,7 @@ public class project {
 	 * Plural Proper Noun = P
 	 * Verb Past Tese | Verb Past Participle = v
 	 * Verb Gerund | Present Participle | Non-3rd Person Singular Present | Non-3rd Person Singular Present
+	 * 	= V
 	 * 
 	 */
 	private static char grading(String x)
