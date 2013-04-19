@@ -26,7 +26,7 @@ public class project {
 	private static void grader(File output) throws FileNotFoundException
 	{
 		Scanner scanner = new Scanner(output);
-		String[] arr;
+		String[] arr = null;
 		int temp = 0;
 		
 		while ( scanner.hasNext() ) {
@@ -35,9 +35,14 @@ public class project {
 		}
 		scanner.close();
 		
+		while (temp != 0) {
+			
+			grading(arr[temp]);
+			temp--;
+		}
 	}
 	
-	private static void grading(String[] arr)
+	private static void grading(String x)
 	{
 		
 		switch () {
