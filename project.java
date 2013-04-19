@@ -1,11 +1,125 @@
+/*
+ * authors: Anthony Spatafora, Robert Faigao
+ * Spring 2013
+ * CS421 Natural Language Processing
+ * Project, Part 1
+ * 
+ * The goal of this project is to take a known POS Tagger
+ *  and use it to make our own program. This program will
+ *  be able to take in essays (input files), tag them,
+ *  and grade the essays based on the tags that were made.
+ *  
+ * 
+ */
+
 import java.io.*;
-import java.util.Scanner;
+import java.util.*;
+import java.nio.charset.Charset;
 
 import opennlp.tools.postag.*;
+import opennlp.tools.sentdetect.*;
+import opennlp.tools.util.*;
+import opennlp.tools.util.model.ModelType;
 
 public class project {
 
-  private static void getFile(File folder, FileWriter output) throws FileNotFoundException
+	private static void grader(File output) throws FileNotFoundException
+	{
+		Scanner scanner = new Scanner(output);
+		String[] arr;
+		int temp = 0;
+		
+		while ( scanner.hasNext() ) {
+			arr[temp] = scanner.next();
+			temp++;
+		}
+		scanner.close();
+		
+	}
+	
+	private static void grading(String[] arr)
+	{
+		
+		switch () {
+		case "CC": // Coordinating conjunction
+			break;
+		case "CD": // Cardinal number
+			break;
+		case "DT": // Determiner
+			break;
+		case "EX": // Existential there
+			break;
+		case "FW": // Foreign word
+			break;
+		case "IN": // Preposition or subordinating conjunction
+			break;
+		case "JJ": // Adjective
+			break;
+		case "JJR": // Adjective, comparative
+			break;
+		case "JJS": // Adjective, superlative
+			break;
+		case "LS": // List item marker
+			break;
+		case "MD": // Modal
+			break;
+		case "NN": // Noun, singular or mass
+			break;
+		case "NNS": // noun, plural
+			break;
+		case "NNP": // Proper noun, singular
+			break;
+		case "NNPS": // Proper noun, plural
+			break;
+		case "PDT": // Predeterminer
+			break;
+		case "POS": // Possessive ending
+			break;
+		case "PRP": // Personal pronoun
+			break;
+		case "PRP$": // Possessive pronoun
+			break;
+		case "RB": // Adverb
+			break;
+		case "RBR": // Adverb, comparative
+			break;
+		case "RBS": // Adverb, superlative
+			break;
+		case "RP": // Particle
+			break;
+		case "SYM": // Symbol
+			break;
+		case "TO": // to
+			break;
+		case "UH": // Interjection
+			break;
+		case "VB": // Verb, base form
+			break;
+		case "VBD": // Verb, past tense
+			break;
+		case "VBG": // Verb, gerund or present participle
+			break;
+		case "VBN": // Verb, past participle
+			break;
+		case "VBP": // Verb, non-3rd person singular present
+			break;
+		case "VBZ": // Verb, 3rd person singular present
+			break;
+		case "WDT": // Wh-determiner
+			break;
+		case "WP": // Wh-pronoun
+			break;
+		case "WP$": // Possessive wh-pronoun
+			break;
+		case "WRB": // Wh-adverb
+			break;
+		
+		
+		}
+		
+	}
+	
+	private static void getFile(File folder, FileWriter output) throws FileNotFoundException
 	{
 		for (final File fileEntry : folder.listFiles()) {
 		    if (fileEntry.isDirectory()) {	//If the given input is a folder, search through the folder
@@ -24,52 +138,56 @@ public class project {
 				POSTag(array, output);
 		    }
 		}
+		
 	} // end getFile...
-  
-  	/*
-  	 * Parse a sentence array and show the tags to each word
-  	 */
+
+	/*
+	 * Parse a sentence array and show the tags to each word
+	 */
 	private static void POSTag(String sent[], FileWriter output){
 		InputStream modelIn = null;
 
 		try {
 			modelIn = new FileInputStream("en-pos-maxent.bin");
 			POSModel model = new POSModel(modelIn);
-			
+
 			POSTaggerME tagger = new POSTaggerME(model);
-			for(int j=0; j<sent.length; j++){
-				String temp[] = sent[j].split("[ \n]");
-				String tags[] = tagger.tag(temp);
-				
-				for(int i=0; i<tags.length; i++){
-					output.write(tags[i] + ' ');
-					System.out.print(tags[i] + ' ');
-				}
-				output.write('\n');
-				System.out.println('\n');
-			}
+			String tags[] = tagger.tag(sent);
+
+			for(int i=0; i<tags.length; i++)
+				System.out.print(tags[i] + ' ');
+			System.out.println('\n');
 		}
 		catch (IOException e) {
-		  // Model loading failed, handle the error
-		  e.printStackTrace();
+			// Model loading failed, handle the error
+			e.printStackTrace();
 		}
 		finally {
-		  if (modelIn != null) {
-		    try {
-		      modelIn.close();
-		    }
-		    catch (IOException e) {
-		    }
-		  }
+			if (modelIn != null) {
+				try {
+					modelIn.close();
+				}
+				catch (IOException e) {
+				}
+			}
 		}			
-	}
-	
+	} // end POSTag...
+
+	public static void main (String args[]) throws IOException
+	{
+		File folder = new File(args[0]);	//The given path of the folder of files
+		FileWriter output = new FileWriter(args[1]);	//The output file to print the tags
+		getFile(folder, output);
+		output.close();
+	} // end main...
+
+
 	/*
 	 * Below was getting to know the parser.
 	 * train() will not actually be used in this code.
 	 * It is more for reference to understand our code.
 	 */
-  /*
+	/*
 	private static void train ()
 	{
 
@@ -124,14 +242,7 @@ public class project {
 		}
 
 	} // end train...
-	*/
+	 */
 
-	public static void main (String args[]) throws IOException
-	{
-		File folder = new File(args[0]);	//The given path of the folder of files
-		FileWriter output = new FileWriter(args[1]);	//The output file to print the tags
-		getFile(folder, output);
-		output.close();
-	} // end main...
 
 }
