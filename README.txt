@@ -13,7 +13,25 @@ downloads your archive file on a computer and needs step by step
 instructions to make everything work. Make sure to specify the relative
 positions of files and folders, if needed.
 
-A: 
+A: This project was created using Eclipse on Ubuntu
+	1) Create a new java project in Eclipse
+	2) Transfer the archive of files into the corresponding folder of the
+		new java project. Eg if the project was named "project" transfer
+		the folders and files into workspace/project
+	3) "Refresh" the project within Eclipse. This will update the project
+		to show the new files. Now Under the project tab, extend the
+		folder "lib" and right click on either file. Point the mouse
+		to "Build Path" and click on "Add to Build Path".
+	4) Before running the program, edit the run configuration (run->run 
+		configurations). Click on the "Arguments" tab.
+		Add under program arguments the full path of the src folder
+			and also the src/essay-corpus folder.
+			eg /home/<user name>/workspace/<project name>/src/essay-corpus
+			and /home/<user name>/workspace/<project name>/src/output.txt
+	5) Run the program.
+
+	Note) To grade new text files, add them to the essay-corpus folder
+		located within the src folder
 
 
 -------------------------------------------------------------------------
