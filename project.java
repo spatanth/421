@@ -9,6 +9,9 @@
  *  be able to take in essays (input files), tag them,
  *  and grade the essays based on the tags that were made.
  *  
+ *  **NOTE**
+ *  We weren't able to complete the grading but this is along
+ *  the lines were were thinking of doing.
  * 
  */
 
@@ -40,16 +43,21 @@ public class project {
 		int temp = 0;
 		char tense = ' ';
 		char retTense = ' ';
+		// start off with a perfect score
+		int score = 5;
+		
 		while (temp != arrSize) {
 			
 			retTense = grading(arr[temp]);
 			
 			if ( (tense != ' ') && (tense != retTense) )
 				System.out.println("Tense error: " + retTense + "!");
-			
+				// every time the tenses don't match, deduct points on the score
+				score -= .5;
 			// increment along the array
 			temp++;
 		}
+		System.out.println("Tense Score: " + score);
 	}
 	
 	/* This method uses a switch case statement to determine the tense of
