@@ -17,14 +17,14 @@
 
 import java.io.*;
 import java.util.*;
-import java.nio.charset.Charset;
 
 import opennlp.tools.postag.*;
-import opennlp.tools.sentdetect.*;
-import opennlp.tools.util.*;
-import opennlp.tools.util.model.ModelType;
 
 public class project {
+	static float scores[][];
+	private static File[] files;
+	private static int totalFiles;
+	private static int currentFile = 0;
 
 	private static void grader(File output) throws FileNotFoundException
 	{
@@ -167,25 +167,26 @@ public class project {
 		return currTense;
 	} // end grading...
 	
-	private static void getFile(File folder, FileWriter output) throws IOException
+	private static void getFile(File folder) throws IOException
 	{
 		for (final File fileEntry : folder.listFiles()) {
 		    if (fileEntry.isDirectory()) {	//If the given input is a folder, search through the folder
-		        getFile(fileEntry, output);
+		        getFile(fileEntry);
 		    } else { //If the given input is a file, read through the file and POS tag it
 		    	//Reads from the file and splits it by line
 		        System.out.println(fileEntry.getName());
 		    	@SuppressWarnings("resource")
 				String content = new Scanner(new File(fileEntry.getAbsolutePath())).useDelimiter("\\Z").next();
-		    	System.out.println(content + '\n');
+		    	//System.out.println(content + '\n');
 		        //Splits the scanned file into individual words
 				String array[] = content.split("[.\n\r\n]");
-				for(int i=0; i<array.length; i++){
-					System.out.println(array[i]);
-				}
-				POSTag(array, output);
-				countSentences(array, output);
+				//for(int i=0; i<array.length; i++){
+					//System.out.println(array[i]);
+				//}
+				//POSTag(array);
+				countSentences(array);
 		    }
+		    currentFile++;
 		}
 		
 	} // end getFile...
@@ -193,7 +194,7 @@ public class project {
 	/*
 	 * Parse a sentence array and show the tags to each word
 	 */
-	private static void POSTag(String sent[], FileWriter output){
+	private static void POSTag(String sent[]){
 		InputStream modelIn = null;
 
 		try {
@@ -223,47 +224,73 @@ public class project {
 	} // end POSTag...
 
   	// Count the number of sentences in the given file
-  	private static void countSentences(String sent[], FileWriter output) throws IOException{
-		int sentences = 0;
+  	private static void countSentences(String sent[]) throws IOException{
+		float sentences = 0;
 		float score = 0;
 		for(int i=0; i<sent.length; i++){
 			String temp[] = sent[i].split("[ \n]");
 			if(temp.length > 1)	//If the sentence length is more than one word it may be a proper sentence
 				sentences++;
 		}
-		score = (float)sentences / 6;
+		score = sentences / 6;
 		//Calculate the scores of each of the files rounded down to the nearest half
 		if(score > 1){
 			score = 5;
-			int s = (int) score;
-			output.write(s + "\n");
+			scores[6][currentFile] = score;
 		}else{
 			score = score * 5;
 			double comp = score - Math.floor(score);
-			if(comp >= 0.75){
+			if(comp >= 0.75){	//If the score is closer to the next number, round it to the higher number
 				score = (float) (Math.floor(score) + 1.0);
-				int s = (int) score;
-				if(score > 5) score = 5;
-				output.write(s + "\n");
-			}else if(comp >= 0.25){
+				if(score > 5) score = 5;	//If the score if more than 5, round it down to 5
+				scores[6][currentFile] = score;
+			}else if(comp >= 0.25){	//If the score is closer to the midpoint of two numbers, round it to the nearest half
 				score = (float) (Math.floor(score) + 1.0);
-				int s = (int) score;
-				output.write(s + ".5\n");
-			}else{
+				score += 0.5;
+				scores[6][currentFile] = score;
+			}else{ //If the score is closer to the lower number, round it down
 				score = (float) (Math.floor(score));
-				int s = (int) score;
-				output.write(s + "\n");
+				scores[6][currentFile] = score;
 			}
 		}
 		System.out.println(sentences);
 		System.out.println(score);
   	} // end countSentences...
+  	
+  	//Prints the scores of each of the files into the output file, and to the screen
+  	private static void printScores(FileWriter output) throws IOException{
+  		for(int y=0; y<totalFiles; y++){
+  			System.out.print(files[y].getName() + "\t");
+  			output.write(files[y].getName() + "\t");
+  			for(int x=0; x<7; x++){
+  				System.out.print(scores[x][y] + "\t");
+  				output.write(scores[x][y] + "\t");
+  			}
+  			System.out.println();
+  			output.write("\r\n");
+  		}
+  	}
+  	
+  	//Initializes a 2d array of size 7x(number of files) to 0
+  	private static void initializeScores(int length){
+  		scores = new float[7][length];
+  		for(int x=0; x<7; x++){
+  			for(int y=0; y<length; y++){
+  				scores[x][y] = 0;
+  			}
+  		}
+  	}
 	
 	public static void main (String args[]) throws IOException
 	{
 		File folder = new File(args[0]);	//The given path of the folder of files
 		FileWriter output = new FileWriter(args[1]);	//The output file to print the tags
-		getFile(folder, output);
+		output.write("Essay\t1a\t1b\t1c\t1d\t2a\t2b\t3a\r\n"); //Prints a header to the file
+    	files = folder.listFiles();
+    	totalFiles = files.length;
+    	initializeScores(totalFiles);
+		getFile(folder);
+		printScores(output);
 		output.close();
 	} // end main...
 
