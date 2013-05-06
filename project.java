@@ -180,15 +180,11 @@ public class project {
 		    	//System.out.println(content + '\n');
 		        //Splits the scanned file into individual words
 				String array[] = content.split("[.\n\r\n]");
-				//for(int i=0; i<array.length; i++){
-					//System.out.println(array[i]);
-				//}
-				//POSTag(array);
+				POSTag(array);
 				countSentences(array);
 		    }
 		    currentFile++;
 		}
-		
 	} // end getFile...
 	
 	/*
@@ -202,11 +198,15 @@ public class project {
 			POSModel model = new POSModel(modelIn);
 
 			POSTaggerME tagger = new POSTaggerME(model);
-			String tags[] = tagger.tag(sent);
-
-			for(int i=0; i<tags.length; i++)
-				System.out.print(tags[i] + ' ');
-			System.out.println('\n');
+			for(int x=0; x<sent.length; x++){
+				System.out.println(sent[x]);
+				String array[] = sent[x].split(" ");
+				String tags[] = tagger.tag(array);
+	
+				for(int i=0; i<tags.length; i++)
+					System.out.print(tags[i] + ' ');
+				System.out.println();
+			}
 		}
 		catch (IOException e) {
 			// Model loading failed, handle the error
