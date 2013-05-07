@@ -281,6 +281,8 @@ public class project {
   	/*
   	 * Currently only checks if the pronouns are first, second, or third person
   	 * and grades with how many their are
+  	 * 
+  	 * TODO: compare third person pronouns to previous nouns for tense
   	 */
   	private static void checkPerson(String array[], String tags[]){
   		//The arrays to compare the pronouns to
@@ -319,6 +321,18 @@ public class project {
   				score += 1;
   				thirdPerson[temp1] = pronouns[x];
   				temp1++;
+  			}
+  		}
+  		
+  		for(int y=0; y<temp1; y++){
+  			if(thirdSingular.contains(thirdPerson[y])){	//Check for a corresponding singular noun before we reach the pronoun in the file
+  				for(int z=0; !(array[z].equals(thirdPerson[y])); z++){
+  					
+  				}
+  			}else{	//Check for a corresponding plural noun before we reach the pronoun in the file
+  				for(int z=0; !(array[z].equals(thirdPerson[y])); z++){
+  					
+  				}
   			}
   		}
   		
