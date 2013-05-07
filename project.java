@@ -200,8 +200,6 @@ public class project {
 			String tempWords[] = new String [1000];	//Total list of words
 			String tempTags[] = new String[1000];	//Total list of tags
 			int current = 0;
-			String pronouns[] = new String[100];
-			int temp1 = 0;
 			
 			POSTaggerME tagger = new POSTaggerME(model);
 			for(int x=0; x<sent.length; x++){
@@ -213,27 +211,24 @@ public class project {
 						tempWords[current] = array[i];
 						tempTags[current] = tags[i];
 						current++;
-						
-						if(tags[i].equals("PRP") || tags[i].equals("PRP$")){	//Get the pronouns in the file
-							pronouns[temp1] = array[i].toLowerCase();
-							temp1++;
-						}
 					}
 				}
 			}
-			String fileWords[] = new String[current];
-			fileWords = tempWords;
-			String fileTags[] = new String[current];
-			fileTags = tempTags;
+			String fileWords[] = new String[current];	//Total list of words with correct array length
+			String fileTags[] = new String[current];	//Total list of tags with correct array length
+			for(int x=0; x<current; x++){
+				fileWords[x] = tempWords[x];
+				fileTags[x] = tempTags[x];
+			}
 			
 			for(int i=0; i<fileWords.length; i++)
-				System.out.print(fileWords[i] + '\t');
+				System.out.print(fileWords[i] + ' ');
 			System.out.println();
 			for(int i=0; i<fileTags.length; i++)
-				System.out.print(fileTags[i] + '\t');
+				System.out.print(fileTags[i] + ' ');
 			System.out.println();
 			
-			checkPerson(pronouns);
+			checkPerson(fileWords, fileTags);
 			checkTopic(fileWords, fileTags);
 		}
 		catch (IOException e) {
@@ -279,10 +274,19 @@ public class project {
   	 * Currently only checks if the pronouns are first, second, or third person
   	 * and grades with how many their are
   	 */
-  	private static void checkPerson(String pronouns[]){
+  	private static void checkPerson(String array[], String tags[]){
   		Set<String> first = new HashSet<String>(Arrays.asList(new String[] {"i", "i'm", "me", "my", "mine", "we", "us", "our"}));
   		Set<String> second = new HashSet<String>(Arrays.asList(new String[] {"you", "your"}));
   		Set<String> third = new HashSet<String>(Arrays.asList(new String[] {"he", "she", "him", "her", "his", "hers", "they", "them", "their", "theirs", "it"}));
+  		
+		String[] pronouns = new String[array.length];
+		int temp = 0;
+		for(int i=0; i<array.length; i++){
+			if(tags[i].equals("PRP") || tags[i].equals("PRP$")){	//Get the pronouns in the file
+				pronouns[temp] = array[i].toLowerCase();
+				temp++;
+			}
+		}
   		
   		int score = 5;
   		
@@ -310,19 +314,23 @@ public class project {
   		scores[4][currentFile] = score;
   		//System.out.println();
   	}
-  	
+
+  	/*
+  	 * Checks to see if the author wrote about the topic of choice, autobiography
+  	 * Uses matching strings to check if they are included in the essay
+  	 */
   	private static void checkTopic(String array[], String tags[]){
   		String nouns[] = new String[100];
   		int temp = 0;
   		int total = 0;
   		int properNouns = 0;
   		
-  		for(int i=0; array[i] != null; i++){
+  		for(int i=0; i<array.length; i++){
 	  		if(tags[i].equals("NN") || tags[i].equals("NNS")) {	//Get the nouns in the file
 				nouns[temp] = array[i].toLowerCase();
 				temp++;
 				total++;
-			} else if(tags[i].equals("NNP") && !tags[i-1].equals("NNP")) {	//If it is a proper noun, add it to the list
+			} else if(tags[i].equals("NNP") && !tags[i-1].equals("NNP")) {	//If it is a proper noun, add it to the list (names count as 1 noun)
 				properNouns++;
 				total++;
 			}
