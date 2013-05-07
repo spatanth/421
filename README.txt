@@ -14,22 +14,8 @@ instructions to make everything work. Make sure to specify the relative
 positions of files and folders, if needed.
 
 A: This project was created using Eclipse on Ubuntu
-	1) Create a new java project in Eclipse
-	2) Transfer the archive of files into the corresponding folder of the
-		new java project. Eg if the project was named "project" transfer
-		the folders and files into workspace/project
-	3) "Refresh" the project within Eclipse. This will update the project
-		to show the new files. Now Under the project tab, extend the
-		folder "lib" and right click on either file. Point the mouse
-		to "Build Path" and click on "Add to Build Path".
-	4) Before running the program, edit the run configuration (run->run 
-		configurations). Click on the "Arguments" tab.
-		Add under program arguments the full path of output file in 
-			the src folder and also the src/essay-corpus folder.
-			/home/<user name>/workspace/<project name>/src/essay-corpus
-			<space>
-			/home/<user name>/workspace/<project name>/src/output.txt
-	5) Run the program.
+	1) Run the .jar file with the following arguments:
+		./421project.jar <folder of essays> output.txt
 
 	Note) To grade new text files, add them to the essay-corpus folder
 		located within the src folder
@@ -40,10 +26,9 @@ A: This project was created using Eclipse on Ubuntu
   
 Q: Use this section only if your program requires some arguments as input.
 
-A: You will need to input two arguments for out program. You will need to put
-the directory where the test files are located (even the file location 
-individually). The second argument you will need has to be the location 
-for the output file.
+A: You will need to input two arguments for out program. The first argument
+is the folder containing the essays to be checked. The second argument is the
+output .txt file where the scores will be printed in.
 
 
 -------------------------------------------------------------------------
