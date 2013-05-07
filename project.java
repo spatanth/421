@@ -2,7 +2,7 @@
  * authors: Anthony Spatafora, Robert Faigao
  * Spring 2013
  * CS421 Natural Language Processing
- * Project, Part 1
+ * Project, Part 2
  * 
  * The goal of this project is to take a known POS Tagger
  *  and use it to make our own program. This program will
@@ -209,7 +209,7 @@ public class project {
 				String tags[] = tagger.tag(array);
 	
 				for(int i=0; i<tags.length; i++){
-					if(array[i].length() > 1){
+					if(array[i].length() > 0){
 						tempWords[current] = array[i];
 						tempTags[current] = tags[i];
 						current++;
