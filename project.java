@@ -17,6 +17,7 @@
 
 import java.io.*;
 import java.util.*;
+
 import opennlp.tools.postag.*;
 
 public class project {
@@ -298,28 +299,25 @@ public class project {
 		}
   		
   		int score = 5;
-  		
-  		//for(int x=0; pronouns[x] != null; x++)
-  			//System.out.print(pronouns[x] + '\t');
-  		//System.out.println();
+
   		/*
-  		 * Go throught the pronouns and check their person
+  		 * Go through the pronouns and check their person
   		 * If they are first person, no points are given or taken
   		 * If they are second person, 1 point is taken away
   		 * If they are third person, 1 point is given
   		 * Scores are rounded to 0 and 5 accordingly for out of bounds numbers
   		 */
+  		String thirdPerson[] = new String[100];
+  		int temp1 = 0;
   		for(int x=0; pronouns[x] != null; x++){
-  			if(first.contains(pronouns[x])) {
-  				//System.out.print("one" + '\t');
-  			} else if(second.contains(pronouns[x])) {
+  			if(first.contains(pronouns[x])) {	//Do nothing
+  				;
+  			} else if(second.contains(pronouns[x])) {	//take away a point
   				score -= 1;
-  				//System.out.print("two" + '\t');
-  			} else if(third.contains(pronouns[x])) {
+  			} else if(third.contains(pronouns[x])) {	//Add a point and add it to the list of third person prounouns
   				score += 1;
-  				//System.out.print("three" + '\t');
-  			} else {
-  				//System.out.print('\t');
+  				thirdPerson[temp1] = pronouns[x];
+  				temp1++;
   			}
   		}
   		if(score > 5)
