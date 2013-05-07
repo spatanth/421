@@ -17,7 +17,6 @@
 
 import java.io.*;
 import java.util.*;
-
 import opennlp.tools.postag.*;
 
 public class project {
