@@ -358,7 +358,7 @@ public class project {
 					curr--;
 				helper = array[curr];
 				//As long as the proper noun is being said by the author and not a third person, add it to the totals
-				if(helper.equals("I") || helper.equals("my"))
+				if(helper.equals("I") || helper.equals("my") || curr == 0)
 					properNouns++;
 				total++;
 			}
@@ -369,15 +369,25 @@ public class project {
   		Set<String> family = new HashSet<String>(Arrays.asList(new String[] 
   				{"family", "child", "children", "kid", "kids", "son", "daughter",
   				"parent", "father", "mother", "sibling", "brother", "sister",
-  				"girls", "boys", "mom", "dad", "brothers", "sisters", "cousins"}));
+  				"girls", "boys", "mom", "dad", "brothers", "sisters", "cousins",
+  				"husband", "wife", "husband's", "wife's", "grandson", "granddaughter"}));
   		Set<String> workSchool = new HashSet<String>(Arrays.asList(new String[]
   				{"work", "job", "school", "education", "learn", "educate"}));
   		
   		int contained = properNouns;
   		//If the noun matches a noun in our arrays, add one to the number of contained words
   		for(int x=0; nouns[x] != null; x++) {
-  			if(family.contains(nouns[x]) || workSchool.contains(nouns[x]))
-  				contained++;
+  			if(family.contains(nouns[x]) || workSchool.contains(nouns[x])){
+  				int curr = x-1;
+  				String helper = tags[curr];
+  				//Find a previous pronoun to compare to the current noun
+  				while((curr) != 0 && !(tags[curr].equals("PRP") || tags[curr].equals("PRP$")))
+  					curr--;
+  				helper = array[curr];
+  				//If the previous pronoun is in first person, or if we are in the beginning of the sentence, count it to the total contained
+  				if(helper.equals("I") || helper.equals("my") || curr == 0)
+  					contained++;
+  			}
   			System.out.print(nouns[x] + ' ');
   		}
   		System.out.println("\n" + contained + ' ' + total);
@@ -390,15 +400,15 @@ public class project {
   		 */
   		float score = (float)contained / (float)total;
   		System.out.println(score);
-  		if(score >= 0.4)
+  		if(score >= 0.5)
   			scores[5][currentFile] = 5;
-  		else if(score >= 0.3)
+  		else if(score >= 0.4)
   			scores[5][currentFile] = 4;
-  		else if(score >= 0.2)
+  		else if(score >= 0.3)
   			scores[5][currentFile] = 3;
-  		else if(score >= 0.1)
+  		else if(score >= 0.2)
   			scores[5][currentFile] = 2;
-  		else if(score > 0)
+  		else if(score >= 0.1)
   			scores[5][currentFile] = 1;
   		else
   			scores[5][currentFile] = 0;
@@ -478,9 +488,9 @@ public class project {
 	/*
 	private static void train ()
 	{
-
+	
 		POSModel model = null;
-
+	
 		InputStream dataIn = null;
 		try {
 			dataIn = new FileInputStream("en-pos.train");
@@ -530,7 +540,5 @@ public class project {
 		}
 
 	} // end train...
-	 */
-
-
+	*/
 }
