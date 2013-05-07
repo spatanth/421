@@ -197,8 +197,8 @@ public class project {
 			modelIn = new FileInputStream("en-pos-maxent.bin");
 			POSModel model = new POSModel(modelIn);
 			
-			String fileWords[] = new String [1000];
-			String fileTags[] = new String[1000];
+			String tempWords[] = new String [1000];	//Total list of words
+			String tempTags[] = new String[1000];	//Total list of tags
 			int current = 0;
 			String pronouns[] = new String[100];
 			int temp1 = 0;
@@ -208,11 +208,10 @@ public class project {
 				String array[] = sent[x].split(" ");
 				String tags[] = tagger.tag(array);
 	
-				//Used in part 2
 				for(int i=0; i<tags.length; i++){
 					if(array[i].length() > 1){
-						fileWords[current] = array[i];
-						fileTags[current] = tags[i];
+						tempWords[current] = array[i];
+						tempTags[current] = tags[i];
 						current++;
 						
 						if(tags[i].equals("PRP") || tags[i].equals("PRP$")){	//Get the pronouns in the file
@@ -222,11 +221,15 @@ public class project {
 					}
 				}
 			}
+			String fileWords[] = new String[current];
+			fileWords = tempWords;
+			String fileTags[] = new String[current];
+			fileTags = tempTags;
 			
-			for(int i=0; i<current; i++)
+			for(int i=0; i<fileWords.length; i++)
 				System.out.print(fileWords[i] + '\t');
 			System.out.println();
-			for(int i=0; i<current; i++)
+			for(int i=0; i<fileTags.length; i++)
 				System.out.print(fileTags[i] + '\t');
 			System.out.println();
 			
