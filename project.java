@@ -286,7 +286,8 @@ public class project {
   		//The arrays to compare the pronouns to
   		Set<String> first = new HashSet<String>(Arrays.asList(new String[] {"i", "i'm", "me", "my", "mine", "we", "us", "our"}));
   		Set<String> second = new HashSet<String>(Arrays.asList(new String[] {"you", "your"}));
-  		Set<String> third = new HashSet<String>(Arrays.asList(new String[] {"he", "she", "him", "her", "his", "hers", "they", "them", "their", "theirs", "it"}));
+  		Set<String> thirdSingular = new HashSet<String>(Arrays.asList(new String[] {"he", "she", "him", "her", "his", "hers", "it"}));
+  		Set<String> thirdPlural = new HashSet<String>(Arrays.asList(new String[] {"they", "them", "their", "theirs"}));
   		
   		//Create an array of pronouns from the file
 		String[] pronouns = new String[array.length];
@@ -314,12 +315,13 @@ public class project {
   				;
   			} else if(second.contains(pronouns[x])) {	//take away a point
   				score -= 1;
-  			} else if(third.contains(pronouns[x])) {	//Add a point and add it to the list of third person prounouns
+  			} else if(thirdSingular.contains(pronouns[x]) || thirdPlural.contains(pronouns[x])) {	//Add a point and add it to the list of third person pronouns
   				score += 1;
   				thirdPerson[temp1] = pronouns[x];
   				temp1++;
   			}
   		}
+  		
   		if(score > 5)
   			score = 5;
   		else if (score < 0)
