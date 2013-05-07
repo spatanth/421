@@ -21,11 +21,11 @@ import java.util.*;
 import opennlp.tools.postag.*;
 
 public class project {
-	static int scores[][];
-	static String finalGrade[][];
-	private static File[] files;
-	private static int totalFiles;
-	private static int currentFile = 0;
+	static int scores[][];	//A double array holding the scores for each file
+	static String finalGrade[][];	//A double array holding the final grade for each file
+	private static File[] files;	//The list of files used only to count how many files there are
+	private static int totalFiles;	//The total amount of files in the corpus
+	private static int currentFile = 0;	//The current file we are working on
 
 	private static void grader(File output) throws FileNotFoundException
 	{
@@ -180,10 +180,10 @@ public class project {
 				String content = new Scanner(new File(fileEntry.getAbsolutePath())).useDelimiter("\\Z").next();
 		        //Splits the scanned file into individual words
 				String array[] = content.split("[.\n\r\n]");
-				POSTag(array);
-				countSentences(array);
+				POSTag(array);	//Calls the tagger to tag each file
+				countSentences(array);	//Estimates how many sentences there are in a file
 		    }
-		    currentFile++;
+		    currentFile++;	//Move on to the next file
 		}
 	} // end getFile...
 	
@@ -202,12 +202,16 @@ public class project {
 			int current = 0;
 			
 			POSTaggerME tagger = new POSTaggerME(model);
+			/*
+			 * Tags the whole file sentence by sentence
+			 */
 			for(int x=0; x<sent.length; x++){
 				String array[] = sent[x].split(" ");
 				String tags[] = tagger.tag(array);
 	
+				//Tags an individual sentence and adds it to the master list
 				for(int i=0; i<tags.length; i++){
-					if(array[i].length() > 0){
+					if(array[i].length() > 0){	//As long as the string is not empty, add it to the list
 						tempWords[current] = array[i];
 						tempTags[current] = tags[i];
 						current++;
@@ -216,11 +220,15 @@ public class project {
 			}
 			String fileWords[] = new String[current];	//Total list of words with correct array length
 			String fileTags[] = new String[current];	//Total list of tags with correct array length
+			/*
+			 * Creates an array of correct length of all the words we have and a corresponding array for the tags
+			 */
 			for(int x=0; x<current; x++){
 				fileWords[x] = tempWords[x];
 				fileTags[x] = tempTags[x];
 			}
-			
+
+			//screen output to visualize individual tagging
 			for(int i=0; i<fileWords.length; i++)
 				System.out.print(fileWords[i] + ' ');
 			System.out.println();
@@ -228,8 +236,8 @@ public class project {
 				System.out.print(fileTags[i] + ' ');
 			System.out.println();
 			
-			checkPerson(fileWords, fileTags);
-			checkTopic(fileWords, fileTags);
+			checkPerson(fileWords, fileTags);	//Part 2a
+			checkTopic(fileWords, fileTags);	//Part 2b
 		}
 		catch (IOException e) {
 			// Model loading failed, handle the error
@@ -275,15 +283,17 @@ public class project {
   	 * and grades with how many their are
   	 */
   	private static void checkPerson(String array[], String tags[]){
+  		//The arrays to compare the pronouns to
   		Set<String> first = new HashSet<String>(Arrays.asList(new String[] {"i", "i'm", "me", "my", "mine", "we", "us", "our"}));
   		Set<String> second = new HashSet<String>(Arrays.asList(new String[] {"you", "your"}));
   		Set<String> third = new HashSet<String>(Arrays.asList(new String[] {"he", "she", "him", "her", "his", "hers", "they", "them", "their", "theirs", "it"}));
   		
+  		//Create an array of pronouns from the file
 		String[] pronouns = new String[array.length];
 		int temp = 0;
 		for(int i=0; i<array.length; i++){
 			if(tags[i].equals("PRP") || tags[i].equals("PRP$")){	//Get the pronouns in the file
-				pronouns[temp] = array[i].toLowerCase();
+				pronouns[temp] = array[i].toLowerCase();	//convert to lower case to make it easier to compare
 				temp++;
 			}
 		}
@@ -293,6 +303,13 @@ public class project {
   		//for(int x=0; pronouns[x] != null; x++)
   			//System.out.print(pronouns[x] + '\t');
   		//System.out.println();
+  		/*
+  		 * Go throught the pronouns and check their person
+  		 * If they are first person, no points are given or taken
+  		 * If they are second person, 1 point is taken away
+  		 * If they are third person, 1 point is given
+  		 * Scores are rounded to 0 and 5 accordingly for out of bounds numbers
+  		 */
   		for(int x=0; pronouns[x] != null; x++){
   			if(first.contains(pronouns[x])) {
   				//System.out.print("one" + '\t');
@@ -311,7 +328,7 @@ public class project {
   		else if (score < 0)
   			score = 0;
   		
-  		scores[4][currentFile] = score;
+  		scores[4][currentFile] = score;	//Add the score to the corresponding slot in the score array
   		//System.out.println();
   	}
 
@@ -325,25 +342,39 @@ public class project {
   		int total = 0;
   		int properNouns = 0;
   		
+  		/*
+  		 * Create an array containing all of the nouns in the file
+  		 * Checks for proper nouns and makes sure the corresponding pronoun matches first-person
+  		 */
   		for(int i=0; i<array.length; i++){
 	  		if(tags[i].equals("NN") || tags[i].equals("NNS")) {	//Get the nouns in the file
 				nouns[temp] = array[i].toLowerCase();
 				temp++;
 				total++;
-			} else if(tags[i].equals("NNP") && !tags[i-1].equals("NNP")) {	//If it is a proper noun, add it to the list (names count as 1 noun)
-				properNouns++;
+			} else if(tags[i].equals("NNP") && !tags[i-1].equals("NNP")) {	//If it is a proper noun, add it to the list (names count as 1 noun) if the corresponding pronoun is correct
+				String helper = tags[i-1];
+				int curr = i-1;
+				while((curr) != 0 && !(tags[curr].equals("PRP") || tags[curr].equals("PRP$")))
+					curr--;
+				helper = array[curr];
+				//As long as the proper noun is being said by the author and not a third person, add it to the totals
+				if(helper.equals("I") || helper.equals("my"))
+					properNouns++;
 				total++;
 			}
   		}
   		
   		//Come From, live, family, work, school
+  		//The arrays to check if the topic matches
   		Set<String> family = new HashSet<String>(Arrays.asList(new String[] 
   				{"family", "child", "children", "kid", "kids", "son", "daughter",
-  				"parent", "father", "mother", "sibling", "brother", "sister"}));
+  				"parent", "father", "mother", "sibling", "brother", "sister",
+  				"girls", "boys", "mom", "dad", "brothers", "sisters", "cousins"}));
   		Set<String> workSchool = new HashSet<String>(Arrays.asList(new String[]
   				{"work", "job", "school", "education", "learn", "educate"}));
   		
   		int contained = properNouns;
+  		//If the noun matches a noun in our arrays, add one to the number of contained words
   		for(int x=0; nouns[x] != null; x++) {
   			if(family.contains(nouns[x]) || workSchool.contains(nouns[x]))
   				contained++;
@@ -351,6 +382,12 @@ public class project {
   		}
   		System.out.println("\n" + contained + ' ' + total);
   		
+  		/*
+  		 * Calculate the score for this part
+  		 * Still being tweaked
+  		 * Current model is:
+  		 * (total number of words that are part of the topic) / (total number of nouns)
+  		 */
   		float score = (float)contained / (float)total;
   		System.out.println(score);
   		if(score >= 0.4)
@@ -385,6 +422,10 @@ public class project {
   		}
   	}
   	
+  	/*
+  	 * Calculates the final grade for each essay using the following given formula
+  	 * Final Score = (1a + 1b + 1c + 2 * 1d + 2a + 3 * 2b + 3a) / 10
+  	 */
   	private static void finalGrade(int current){  		
 		float total = scores[0][current] + scores[1][current] + scores[2][current] + (2 * scores[3][current]) + scores[4][current] + ( 3 * scores[5][current]) + scores[6][current];
 		total = total / 10;
